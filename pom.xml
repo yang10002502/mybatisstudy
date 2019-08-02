@@ -139,6 +139,7 @@
     <osgi.import>*;resolution:=optional</osgi.import>
     <osgi.dynamicImport>*</osgi.dynamicImport>
     <spotbugs.onlyAnalyze>org.apache.ibatis.*</spotbugs.onlyAnalyze>
+    <skipTests>true</skipTests>
 
     <!-- Remove after parent 32 (support for jdk 13) -->
     <jacoco.version>0.8.4</jacoco.version>
