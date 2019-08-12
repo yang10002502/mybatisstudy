@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Copyright 2009-2019 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.ibatis.parsing;
 
@@ -40,6 +40,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ * XML解析的工具类
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -206,11 +208,15 @@ public class XPathParser {
     return xnodes;
   }
 
+  /**
+   * 使用XPath接口获取解析好的document对象中对应的DOM节点
+   */
   public XNode evalNode(String expression) {
     return evalNode(document, expression);
   }
 
   public XNode evalNode(Object root, String expression) {
+    //从root根节点校验配置
     Node node = (Node) evaluate(expression, root, XPathConstants.NODE);
     if (node == null) {
       return null;
@@ -228,6 +234,7 @@ public class XPathParser {
 
   private Document createDocument(InputSource inputSource) {
     // important: this must only be called AFTER common constructor
+    // 重要提示：只能在公共构造函数之后调用此函数
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setValidating(validation);

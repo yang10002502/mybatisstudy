@@ -234,7 +234,8 @@ public class UnpooledDataSource implements DataSource {
         }
         // DriverManager requires the driver to be loaded via the system ClassLoader.
         // http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
-        Driver driverInstance = (Driver)driverType.getDeclaredConstructor().newInstance();
+        Driver driverInstance = (Driver) driverType.getDeclaredConstructor().newInstance();
+        //使用代理驱动内部类DriverProxy
         DriverManager.registerDriver(new DriverProxy(driverInstance));
         registeredDrivers.put(driver, driverInstance);
       } catch (Exception e) {
@@ -243,6 +244,11 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 配置事务级别和事务的自动提交
+   * @param conn
+   * @throws SQLException
+   */
   private void configureConnection(Connection conn) throws SQLException {
     if (defaultNetworkTimeout != null) {
       conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), defaultNetworkTimeout);
@@ -255,6 +261,9 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 定义Driver的代理驱动内部类DriverProxy
+   */
   private static class DriverProxy implements Driver {
     private Driver driver;
 

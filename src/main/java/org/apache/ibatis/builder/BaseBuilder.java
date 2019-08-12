@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Copyright 2009-2019 the original author or authors.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.ibatis.builder;
 
@@ -29,12 +29,14 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 构造器基类，处理configuration、typeAlias、typeHandler对象
+ *
  * @author Clinton Begin
  */
 public abstract class BaseBuilder {
-  protected final Configuration configuration;
-  protected final TypeAliasRegistry typeAliasRegistry;
-  protected final TypeHandlerRegistry typeHandlerRegistry;
+  protected final Configuration configuration;                //存储mybatis的配置信息
+  protected final TypeAliasRegistry typeAliasRegistry;        //类型别名注册表
+  protected final TypeHandlerRegistry typeHandlerRegistry;    //类型处理程序注册表
 
   public BaseBuilder(Configuration configuration) {
     this.configuration = configuration;
@@ -128,7 +130,7 @@ public abstract class BaseBuilder {
       throw new BuilderException("Type " + type.getName() + " is not a valid TypeHandler because it does not implement TypeHandler interface");
     }
     @SuppressWarnings("unchecked") // already verified it is a TypeHandler
-    Class<? extends TypeHandler<?>> typeHandlerType = (Class<? extends TypeHandler<?>>) type;
+      Class<? extends TypeHandler<?>> typeHandlerType = (Class<? extends TypeHandler<?>>) type;
     return resolveTypeHandler(javaType, typeHandlerType);
   }
 

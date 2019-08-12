@@ -1,17 +1,17 @@
 /**
- * Copyright 2009-2019 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Copyright 2009-2019 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package org.apache.ibatis.datasource.pooled;
 
@@ -33,13 +33,13 @@ class PooledConnection implements InvocationHandler {
 
   private final int hashCode;
   private final PooledDataSource dataSource;
-  private final Connection realConnection;
-  private final Connection proxyConnection;
-  private long checkoutTimestamp;
-  private long createdTimestamp;
-  private long lastUsedTimestamp;
-  private int connectionTypeCode;
-  private boolean valid;
+  private final Connection realConnection;    //真正的数据库链接
+  private final Connection proxyConnection;   //数据库链接的代理对象
+  private long checkoutTimestamp;             //从连接池中取出该链接的时间戳
+  private long createdTimestamp;              //该链接创建的时间戳
+  private long lastUsedTimestamp;             //最后一次呗使用的时间戳
+  private int connectionTypeCode;             // 由数据库URL、用户名、密码计算的hash值，用于标志该链接所在的连接池
+  private boolean valid;                      //检测当前PooledConnection是否有效，防止程序通过close方法将链接归还给连接池后依然通过该链接操作数据库
 
   /**
    * Constructor for SimplePooledConnection that uses the Connection and PooledDataSource passed in.
