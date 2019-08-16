@@ -1,17 +1,17 @@
 /**
- * Copyright 2009-2019 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Copyright 2009-2019 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package org.apache.ibatis.session;
 
@@ -97,6 +97,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * 存储所有Mybatis运行时的配置
+ *
  * @author Clinton Begin
  */
 public class Configuration {
@@ -108,6 +109,7 @@ public class Configuration {
   protected boolean mapUnderscoreToCamelCase;
   protected boolean aggressiveLazyLoading;
   protected boolean multipleResultSetsEnabled = true;
+  //指定是否使用主键生成器
   protected boolean useGeneratedKeys;
   protected boolean useColumnLabel = true;
   protected boolean cacheEnabled = true;
@@ -136,6 +138,7 @@ public class Configuration {
   protected boolean lazyLoadingEnabled = false;
   protected ProxyFactory proxyFactory = new JavassistProxyFactory(); // #224 Using internal Javassist instead of OGNL
 
+  //用于指定数据库厂商
   protected String databaseId;
   /**
    * Configuration factory class.
@@ -151,19 +154,26 @@ public class Configuration {
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
+  //SQL语句配置
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
     .conflictMessageProducer((savedValue, targetValue) ->
       ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
+  //缓存配置
   protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
+  //ResultMap配置
   protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection");
+  //主键生成器
   protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");
 
+  //用于判断SQL Mapper文件是否加载过
   protected final Set<String> loadedResources = new HashSet<>();
   protected final Map<String, XNode> sqlFragments = new StrictMap<>("XML fragments parsed from previous mappers");
 
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();
+  //加载失败的缓存引用的配置处理器
   protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<>();
+  //加载失败的ResultMap配置
   protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();
   protected final Collection<MethodResolver> incompleteMethods = new LinkedList<>();
 
@@ -171,6 +181,7 @@ public class Configuration {
    * A map holds cache-ref relationship. The key is the namespace that
    * references a cache bound to another namespace and the value is the
    * namespace which the actual cache is bound to.
+   * 缓存引用的配置
    */
   protected final Map<String, String> cacheRefMap = new HashMap<>();
 

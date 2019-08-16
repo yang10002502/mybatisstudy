@@ -1,17 +1,17 @@
 /**
- * Copyright 2009-2019 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Copyright 2009-2019 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package org.apache.ibatis.builder.xml;
 
@@ -93,9 +93,12 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   /**
    * 获取mapper文件的namespace来实例化mapper接口
+   * 完成大部分配置内容的加载工作，使MapperRegistry注册机将构建好的Mapper注册到configuration对象中
    */
   public void parse() {
+    //判断是否已经加载过，防止相同的SQL Mapper的配置被重复加载
     if (!configuration.isResourceLoaded(resource)) {
+      //没有加载过，则解析mapper，并添加至configuration中
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -115,17 +118,23 @@ public class XMLMapperBuilder extends BaseBuilder {
       /**
        * <mapper namespace="com.chinaentropy.mapper.ConsumerMapper">
        */
+      //加载SQL的命名空间，必须指定namespace，若未设置，则抛出异常，一般使用mapper或Dao的接口名
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.equals("")) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
+      //将当前的配置的命名空间配置奥configuration对象
       builderAssistant.setCurrentNamespace(namespace);
+      //加载缓存配置
       cacheRefElement(context.evalNode("cache-ref"));
       cacheElement(context.evalNode("cache"));
+      //解析parameterMap标签（现在已废弃）
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      //解析resultMap标签，加载结果集映射
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      //解析sql标签，加载SQL片段
       sqlElement(context.evalNodes("/mapper/sql"));
-      //绑定mapper接口和mapper.xml接口的方法
+      //绑定mapper接口和mapper.xml接口的方法，加载SQL语句
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -258,6 +267,8 @@ public class XMLMapperBuilder extends BaseBuilder {
    * <result column="start_time" property="startTime"/>
    * <result column="end_time" property="endTime"/>
    * </resultMap>
+   * <p>
+   * 构建一个ResultMap结果集，然后将该结果集添加到configuration对象中。
    */
   private void resultMapElements(List<XNode> list) throws Exception {
     for (XNode resultMapNode : list) {
@@ -265,6 +276,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         resultMapElement(resultMapNode);
       } catch (IncompleteElementException e) {
         // ignore, it will be retried 忽略，会重试
+        // 在configuration中的incompleteResultMaps属性中加入未完成的任务
       }
     }
   }
@@ -310,9 +322,10 @@ public class XMLMapperBuilder extends BaseBuilder {
     // 封装ResultMapResolver对象
     ResultMapResolver resultMapResolver = new ResultMapResolver(builderAssistant, id, typeClass, extend, discriminator, resultMappings, autoMapping);
     try {
-      //调用ResultMapResolver对象的resolve方法
+      //调用ResultMapResolver对象的resolve方法，生成ResultMap对象
       return resultMapResolver.resolve();
     } catch (IncompleteElementException e) {
+      //在configuration中的incompleteResultMaps属性中加入未完成的任务
       configuration.addIncompleteResultMap(resultMapResolver);
       throw e;
     }
