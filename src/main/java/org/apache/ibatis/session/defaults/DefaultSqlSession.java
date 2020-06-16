@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class DefaultSqlSession implements SqlSession {
   public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds) {
     final List<? extends V> list = selectList(statement, parameter, rowBounds);
     final DefaultMapResultHandler<K, V> mapResultHandler = new DefaultMapResultHandler<>(mapKey,
-            configuration.getObjectFactory(), configuration.getObjectWrapperFactory(), configuration.getReflectorFactory());
+      configuration.getObjectFactory(), configuration.getObjectWrapperFactory(), configuration.getReflectorFactory());
     final DefaultResultContext<V> context = new DefaultResultContext<>();
     for (V o : list) {
       context.nextResultObject(o);
@@ -192,8 +192,12 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public int update(String statement, Object parameter) {
     try {
+      // 设置dirty的值，影响事务的提交还是回滚
       dirty = true;
+      // 从configuration根据statement名字获取MappedStatement对象
+      // （解析XML构建configuration时创建Map对象mappedStatements，key为statement，value为MappedStatement）
       MappedStatement ms = configuration.getMappedStatement(statement);
+      // 简单执行器更新操作
       return executor.update(ms, wrapCollection(parameter));
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error updating database.  Cause: " + e, e);

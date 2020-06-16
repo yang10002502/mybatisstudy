@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,9 +44,12 @@ public class SimpleExecutor extends BaseExecutor {
   public int doUpdate(MappedStatement ms, Object parameter) throws SQLException {
     Statement stmt = null;
     try {
+      // 在MappedStatement中以属性保存Configuration对象
       Configuration configuration = ms.getConfiguration();
       StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
+      // 通过transaction 获取 connect
       stmt = prepareStatement(handler, ms.getStatementLog());
+      // 对sql进行预编译,并执行操作
       return handler.update(stmt);
     } finally {
       closeStatement(stmt);

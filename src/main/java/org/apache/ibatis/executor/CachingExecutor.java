@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -106,6 +106,7 @@ public class CachingExecutor implements Executor {
         return list;
       }
     }
+    // delegate 为 SimpleExecutor，在抽象类中BaseExecutor的query中会调用queryFromDatabase，其中会调用doQuery（声明的抽象方法，），具体是由SimpleExecutor实现
     return delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
   }
 

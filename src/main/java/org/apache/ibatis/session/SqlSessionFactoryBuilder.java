@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,6 +32,12 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
  */
 public class SqlSessionFactoryBuilder {
 
+  /**
+   * 根据配置文件的输入构建SqlSessionFactory
+   *
+   * @param reader
+   * @return
+   */
   public SqlSessionFactory build(Reader reader) {
     return build(reader, null, null);
   }
@@ -56,7 +62,9 @@ public class SqlSessionFactoryBuilder {
    */
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
+      // 根据xml配置文件构建XmlConfigBuilder对象，从磁盘中加载到内存对象加快数据的读取
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
+      // 将解析器解析得到的Configuration作为DefaultSqlSessionFactory构造函数的入参传入赋值
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
@@ -84,6 +92,7 @@ public class SqlSessionFactoryBuilder {
 
   /**
    * mybatis构建阶段的调用入口
+   *
    * @param inputStream
    * @param environment
    * @param properties

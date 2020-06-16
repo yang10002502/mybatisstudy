@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class RawSqlSource implements SqlSource {
     sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<>());
   }
 
+  // 将SqlNode转换成String
   private static String getSql(Configuration configuration, SqlNode rootSqlNode) {
     DynamicContext context = new DynamicContext(configuration, null);
     rootSqlNode.apply(context);

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -98,6 +98,7 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   public Configuration parse() {
+    // 配置文件只允许解析一次
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
@@ -404,18 +405,22 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   /**
    * 内首先判断子元素是不是package，若是<mapper resource="mapper/demo.xml"/>这种形式的
-   *
-   * @param parent
-   * @throws Exception
+   * <mappers>
+   *   <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
+   *   <mapper resource="org/mybatis/builder/BlogMapper.xml"/>
+   *   <mapper resource="org/mybatis/builder/PostMapper.xml"/>
+   * </mappers>
    */
   private void mapperElement(XNode parent) throws Exception {
+    // 设置mappers标签
     if (parent != null) {
+      // 依次遍历mappers的子标签mapper
       for (XNode child : parent.getChildren()) {
-        if ("package".equals(child.getName())) {
+        if ("package".equals(child.getName())) {//取出package标签
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
         } else {
-          String resource = child.getStringAttribute("resource");
+          String resource = child.getStringAttribute("resource");//取出resource标签
           String url = child.getStringAttribute("url");
           String mapperClass = child.getStringAttribute("class");
           if (resource != null && url == null && mapperClass == null) {

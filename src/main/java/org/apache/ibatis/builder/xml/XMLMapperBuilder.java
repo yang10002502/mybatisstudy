@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -100,6 +100,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     if (!configuration.isResourceLoaded(resource)) {
       //没有加载过，则解析mapper，并添加至configuration中
       configurationElement(parser.evalNode("/mapper"));
+      // 在set集合对象loadedResources添加
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
     }
@@ -145,11 +146,13 @@ public class XMLMapperBuilder extends BaseBuilder {
     if (configuration.getDatabaseId() != null) {
       buildStatementFromContext(list, configuration.getDatabaseId());
     }
+    // 解析insert、select、update、delete标签
     buildStatementFromContext(list, null);
   }
 
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
+      // 依次遍历mapper文件中定义的insert、select、update、delete标签
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
         statementParser.parseStatementNode();
@@ -259,13 +262,13 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   /**
    * <resultMap id="BaseResultMap" type="com.chinaentropy.domain.Consumer">
-   * <result column="id" property="id" jdbcType="CHAR"/>
-   * <result column="name" property="name" jdbcType="VARCHAR"/>
-   * <result column="gender" property="gender" jdbcType="TINYINT"/>
-   * <result column="phone_num" property="phoneNum" jdbcType="CHAR"/>
-   * <result column="department" property="department" jdbcType="VARCHAR"/>
-   * <result column="start_time" property="startTime"/>
-   * <result column="end_time" property="endTime"/>
+   *    <result column="id" property="id" jdbcType="CHAR"/>
+   *    <result column="name" property="name" jdbcType="VARCHAR"/>
+   *    <result column="gender" property="gender" jdbcType="TINYINT"/>
+   *    <result column="phone_num" property="phoneNum" jdbcType="CHAR"/>
+   *    <result column="department" property="department" jdbcType="VARCHAR"/>
+   *    <result column="start_time" property="startTime"/>
+   *    <result column="end_time" property="endTime"/>
    * </resultMap>
    * <p>
    * 构建一个ResultMap结果集，然后将该结果集添加到configuration对象中。

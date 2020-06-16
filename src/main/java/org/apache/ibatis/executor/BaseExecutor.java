@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -113,6 +113,7 @@ public abstract class BaseExecutor implements Executor {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+    // 清除本地缓存
     clearLocalCache();
     return doUpdate(ms, parameter);
   }
@@ -268,16 +269,16 @@ public abstract class BaseExecutor implements Executor {
   }
 
   protected abstract int doUpdate(MappedStatement ms, Object parameter)
-      throws SQLException;
+    throws SQLException;
 
   protected abstract List<BatchResult> doFlushStatements(boolean isRollback)
-      throws SQLException;
+    throws SQLException;
 
   protected abstract <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)
-      throws SQLException;
+    throws SQLException;
 
   protected abstract <E> Cursor<E> doQueryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds, BoundSql boundSql)
-      throws SQLException;
+    throws SQLException;
 
   protected void closeStatement(Statement statement) {
     if (statement != null) {
@@ -291,10 +292,11 @@ public abstract class BaseExecutor implements Executor {
 
   /**
    * Apply a transaction timeout.
+   *
    * @param statement a current statement
    * @throws SQLException if a database access error occurs, this method is called on a closed <code>Statement</code>
-   * @since 3.4.0
    * @see StatementUtil#applyTransactionTimeout(Statement, Integer, Integer)
+   * @since 3.4.0
    */
   protected void applyTransactionTimeout(Statement statement) throws SQLException {
     StatementUtil.applyTransactionTimeout(statement, statement.getQueryTimeout(), transaction.getTimeout());
@@ -379,7 +381,7 @@ public abstract class BaseExecutor implements Executor {
     public void load() {
       @SuppressWarnings("unchecked")
       // we suppose we get back a List
-      List<Object> list = (List<Object>) localCache.getObject(key);
+        List<Object> list = (List<Object>) localCache.getObject(key);
       Object value = resultExtractor.extractObjectFromList(list, targetType);
       resultObject.setValue(property, value);
     }

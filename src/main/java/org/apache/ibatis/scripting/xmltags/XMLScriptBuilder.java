@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -66,9 +66,12 @@ public class XMLScriptBuilder extends BaseBuilder {
   public SqlSource parseScriptNode() {
     MixedSqlNode rootSqlNode = parseDynamicTags(context);
     SqlSource sqlSource;
+    // 判断是否为动态SQL
     if (isDynamic) {
+      // 若包含动态SQL标签，则返回DynamicSqlSource
       sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
     } else {
+      // RawSqlSource
       sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
     }
     return sqlSource;

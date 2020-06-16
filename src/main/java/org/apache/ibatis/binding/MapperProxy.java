@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -61,18 +61,14 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     return methodCache.computeIfAbsent(method, k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }
 
-  private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
-      throws Throwable {
-    final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
-        .getDeclaredConstructor(Class.class, int.class);
+  private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+    final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
     if (!constructor.isAccessible()) {
       constructor.setAccessible(true);
     }
     final Class<?> declaringClass = method.getDeclaringClass();
-    return constructor
-        .newInstance(declaringClass,
-            MethodHandles.Lookup.PRIVATE | MethodHandles.Lookup.PROTECTED
-                | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC)
-        .unreflectSpecial(method, declaringClass).bindTo(proxy).invokeWithArguments(args);
+    return constructor.newInstance(declaringClass,
+      MethodHandles.Lookup.PRIVATE | MethodHandles.Lookup.PROTECTED | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC)
+      .unreflectSpecial(method, declaringClass).bindTo(proxy).invokeWithArguments(args);
   }
 }
